@@ -12,16 +12,15 @@ FROM="From"
 PATTERN=$1
 FILE=$2
 
-echo 'Filename: '$FILE
 
 awk -v PATTERN="$PATTERN" -v FROM="$FROM" 'BEGIN {
-    letters=0
+    found=0; total=0
     }
 
-($0~FROM){start=1; buf=""} 
+($0~FROM){start=1; buf=""; total++} 
 start{
    if ($0~PATTERN)
-        {is_match=1;start=0;buf1=buf;letters++}
+        {is_match=1;start=0;buf1=buf;found++}
    elss
        buf = buf $0 ORS
      }
@@ -32,6 +31,8 @@ is_match{
         buf1 = buf1 $0 ORS
      }
 END {
-    print "found  " letters "  letters"
+    print "Total  " total "  letters"
+    print "Found  " found "  letters"
 }' "$FILE" 
-
+echo 'It took ' $SECONDS 'seconds' 
+echo 'Filename: '$FILE
